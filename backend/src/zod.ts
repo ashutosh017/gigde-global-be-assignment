@@ -11,3 +11,11 @@ export const signinSchema = z.object({
     password: z.string().min(3).max(100),
     country:z.string().nonempty().max(100)
   });
+
+  declare global {
+    namespace Express {
+      interface Request {
+        userId: string;
+      }
+    }
+  }

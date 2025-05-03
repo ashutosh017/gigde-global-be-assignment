@@ -5,6 +5,7 @@ import taskRouter from './routes/task';
 import projectRouter from './routes/project';
 import { authRouter } from './routes/auth';
 import { authMiddleware } from './middleware';
+import prisma from './prismaClient';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -21,6 +22,22 @@ app.use('/auth', authRouter); // Mount the user router
 app.get('/', (req, res) => {
   res.send('API is running!');
 });
+app.get("/user",authMiddleware,async(req,res)=>{
+  try {
+    const user = await prisma.user.findFirst({
+      where:{
+        id:req.userId
+      }
+    })
+    res.status(200).json({
+      user
+    })
+  } catch (error) {
+    res.status(400).json({
+      msg:"cannot find user"
+    })
+  }
+})
 
 // Start the server
 app.listen(PORT, () => {

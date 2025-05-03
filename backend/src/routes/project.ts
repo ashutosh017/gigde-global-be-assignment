@@ -39,6 +39,7 @@ projectRouter.post("/", async (req: AuthRequest, res: Response) => {
         const newProject: Project = await db.project.create({
             data: {
                 name,
+                
                 userId: req.user!.id,
             },
         });
@@ -84,12 +85,15 @@ projectRouter.delete("/:projectId", async (req: AuthRequest, res: Response) => {
 // 3. Get all projects for a user
 projectRouter.get("/", async (req: AuthRequest, res: Response) => {
     try {
-        const projects: Project[] = await db.project.findMany({
+        const projects = await db.project.findMany({
             where: {
                 userId: req.user!.id,
             },
             orderBy: {
                 id: 'asc' // You can change the ordering as needed
+            },
+            include:{
+                user:true
             }
         });
         res.status(200).json(projects);
